@@ -106,18 +106,19 @@ static void onReshadePresent(reshade::api::effect_runtime* runtime) {
     reshade::api::effect_uniform_variable scale_var = runtime->find_uniform_variable("zoomscope.fx", "ZoomLevelDelta");
     reshade::api::effect_uniform_variable inc_var = runtime->find_uniform_variable("zoomscope.fx", "ZoomIn");
     reshade::api::effect_uniform_variable dec_var = runtime->find_uniform_variable("zoomscope.fx", "ZoomOut");
-    if (enable_var == 0 || zoom_var == 0 || scale_var == 0) return;
+    if (enable_var == 0 || zoom_var == 0 || scale_var == 0 || inc_var == 0 || dec_var == 0) return;
     bool enabled = false;
     runtime->get_uniform_value_bool(enable_var, &enabled, 1);
     if (enabled) {
-        float delta = 0.0f;
+        bool inc = 0.0f;
+        bool dec = 0.0f;
+	    runtime->get_uniform_value_bool(inc_var, &inc, 1);
+	    runtime->get_uniform_value_bool(dec_var, &dec, 1);
         float wheel = 0.0f;
-        // F13 decreases, F14 increases
-        const bool dec_down = isKeyPressed(runtime, "F13", false, false, false);
-        const bool inc_down = isKeyPressed(runtime, "F14", false, false, false);
-        if (dec_down && !inc_down)
+        float delta = 0.0f;
+        if (dec && !inc)
             delta = -1.0f;
-        else if (inc_down && !dec_down)
+        else if (inc && !dec)
             delta = 1.0f;
         else
             delta = 0.0f;
