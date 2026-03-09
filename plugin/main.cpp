@@ -104,7 +104,7 @@ static void onReshadePresent(reshade::api::effect_runtime* runtime) {
     reshade::api::effect_uniform_variable enable_var = runtime->find_uniform_variable("zoomscope.fx", "EnableMagnifier");
     reshade::api::effect_uniform_variable zoom_var = runtime->find_uniform_variable("zoomscope.fx", "DynamicZoomLevel");
     reshade::api::effect_uniform_variable scale_var = runtime->find_uniform_variable("zoomscope.fx", "ZoomLevelDelta");
-    if (enable_var == 0 || zoom_var == 0 || wheel_var == 0 || scale_var == 0) return;
+    if (enable_var == 0 || zoom_var == 0 || scale_var == 0) return;
     bool enabled = false;
     runtime->get_uniform_value_bool(enable_var, &enabled, 1);
     if (enabled) {
