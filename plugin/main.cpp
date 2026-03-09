@@ -111,8 +111,8 @@ static void onReshadePresent(reshade::api::effect_runtime* runtime) {
         float delta = 0.0f;
         float wheel = 0.0f;
         // F13 decreases, F14 increases
-        const bool dec_down = isKeyDown(runtime, "F13", false, false, false);
-        const bool inc_down = isKeyDown(runtime, "F14", false, false, false);
+        const bool dec_down = isKeyPressed(runtime, "F13", false, false, false);
+        const bool inc_down = isKeyPressed(runtime, "F14", false, false, false);
         if (dec_down && !inc_down)
             delta = -1.0f;
         else if (inc_down && !dec_down)
