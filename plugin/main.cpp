@@ -103,7 +103,6 @@ bool isKeyReleased(const reshade::api::effect_runtime* runtime, std::string _key
 static void onReshadePresent(reshade::api::effect_runtime* runtime) {
     reshade::api::effect_uniform_variable enable_var = runtime->find_uniform_variable("zoomscope.fx", "EnableMagnifier");
     reshade::api::effect_uniform_variable zoom_var = runtime->find_uniform_variable("zoomscope.fx", "DynamicZoomLevel");
-    reshade::api::effect_uniform_variable wheel_var = runtime->find_uniform_variable("zoomscope.fx", "MouseWheelDelta");
     reshade::api::effect_uniform_variable scale_var = runtime->find_uniform_variable("zoomscope.fx", "ZoomLevelDelta");
     if (enable_var == 0 || zoom_var == 0 || wheel_var == 0 || scale_var == 0) return;
     bool enabled = false;
@@ -111,13 +110,20 @@ static void onReshadePresent(reshade::api::effect_runtime* runtime) {
     if (enabled) {
         float delta = 0.0f;
         float wheel = 0.0f;
-        runtime->get_uniform_value_float(wheel_var, &delta, 1);
+        // F13 decreases, F14 increases
+        const bool dec_down = isKeyDown(runtime, "F13", false, false, false);
+        const bool inc_down = isKeyDown(runtime, "F14", false, false, false);
+        if (dec_down && !inc_down)
+            delta = -1.0f;
+        else if (inc_down && !dec_down)
+            delta = 1.0f;
+        else
+            delta = 0.0f;
         runtime->get_uniform_value_float(scale_var, &wheel, 1);
         float zoom = std::clamp(1 + delta * wheel, 1.0f, 10.0f);
         runtime->set_uniform_value_float(zoom_var, zoom);
     } else {
         runtime->set_uniform_value_float(zoom_var, 1.0f);
-        runtime->set_uniform_value_float(wheel_var, 0.0f);
     }
 }
 
